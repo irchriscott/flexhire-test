@@ -3,7 +3,7 @@ import { TextField, Button, Container, Typography, Avatar, Grid, MenuItem, Selec
 import axios from 'axios';
 import ProfilePage from '../profile';
 
-const API_BASE_URL = "http://localhost:3000/graphql"; // Update with your backend URL
+const API_BASE_URL = "http://localhost:3000/graphql";
 
 const LoginPage = () => {
   const [apiKey, setApiKey] = useState('');
@@ -16,6 +16,7 @@ const LoginPage = () => {
             currentUser {
               name,
               avatarUrl,
+              visibility,
               userSkills {
                 experience,
                 skill {
@@ -41,7 +42,7 @@ const LoginPage = () => {
         return;
       }
 
-      const data = response.data.data.user;
+      const data = response.data.data.currentUser;
       setUserData(data);
     } catch (error) {
       console.error('Login error:', error);
@@ -51,7 +52,7 @@ const LoginPage = () => {
 
   return (
     <>
-    {userData ? <ProfilePage userData={userData} /> : (
+    {userData ? <ProfilePage userData={userData} apiKey={apiKey} /> : (
       <Container maxWidth="sm">
         <Typography variant="h4" gutterBottom>
           Login with API Key
