@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
   require 'httparty'
 
   FLEXHIRE_API_URL = "https://flexhire.com/api/v2"
+  # For the purpose of this test, I'm putting the API key here. 
+  # In a real-world scenario, this would be stored in an environment variable.
   FLEXHIRE_API_KEY = "v5m1lwwt4h7kuor3"
 
   # Proxy GraphQL request to Flexhire API
