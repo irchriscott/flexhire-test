@@ -4,13 +4,16 @@ class ApplicationController < ActionController::Base
 
   require 'httparty'
 
+  # Handle CORS preflight requests
+  before_action :handle_cors, only: [:post, :get]
+
   FLEXHIRE_API_URL = "https://flexhire.com/api/v2"
   # For the purpose of this test, I'm putting the API key here. 
   # In a real-world scenario, this would be stored in an environment variable.
   FLEXHIRE_API_KEY = "v5m1lwwt4h7kuor3"
 
   # Proxy GraphQL request to Flexhire API
-  def proxy_request
+  def graphql_proxy_request
     request_body = JSON.parse(request.body.read)
     query = request_body["query"]
     variables = request_body["variables"] || {}
@@ -44,7 +47,7 @@ class ApplicationController < ActionController::Base
   end
 
   # CORS handling for preflight requests
-  def handle_options
+  def handle_cors
     headers['Access-Control-Allow-Origin'] = '*'
     headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
     headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept, Authorization'

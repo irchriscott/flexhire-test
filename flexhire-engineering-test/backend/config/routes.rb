@@ -12,7 +12,6 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  post '/graphql', to: 'application#proxy_request'
-  options '/graphql', to: 'application#handle_options'
+  post '/graphql', to: 'application#graphql_proxy_request'
 
 end
