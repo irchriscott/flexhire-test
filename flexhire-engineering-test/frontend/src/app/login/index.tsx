@@ -4,12 +4,13 @@ import ProfilePage from '../profile';
 import { graphql, fetchQuery } from 'react-relay';
 import { initRelayEnvironment } from '../../RelayEnvironment';
 
-const LoginPage = () => {
+const loginPage = () => {
   const [apiKey, setApiKey] = useState('');
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
+  const [jobApplications, setJobApplications] = useState([]);
   
-  const handleLogin = async () => {
+  const handlelogin = async () => {
     const query = graphql`
       query loginUserDataQuery {
         currentUser {
@@ -24,6 +25,24 @@ const LoginPage = () => {
           profile {
             visibility
           },
+          freelancerJobApplications(
+            first: 5
+          ) {
+            totalCount
+            edges {
+              node {
+                status
+                contract {
+                  id
+                }
+                job {
+                  title
+                  slug
+                  id
+                }
+              }
+            }
+          }
           jobApplications {
             nodes {
               job {
@@ -59,7 +78,7 @@ const LoginPage = () => {
       ) : (
       <Container maxWidth="sm">
         <Typography variant="h4" gutterBottom>
-          Login with API Key
+          login with API Key
         </Typography>
         <TextField
           label="API Key"
@@ -68,8 +87,8 @@ const LoginPage = () => {
           value={apiKey}
           onChange={(e) => setApiKey(e.target.value)}
         />
-        <Button variant="contained" color="primary" fullWidth onClick={handleLogin} style={{ marginTop: '20px' }}>
-          Login
+        <Button variant="contained" color="primary" fullWidth onClick={handlelogin} style={{ marginTop: '20px' }}>
+          login
         </Button>
       </Container>
     )}
@@ -77,4 +96,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default loginPage;

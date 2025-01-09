@@ -63,9 +63,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData, apiKey }) => {
         ))}
       </ul>
       <Typography variant="h6" sx={{mt: 3}} gutterBottom>Job Applications:</Typography>
-      <ul>
-        {userData.jobApplications.nodes.map((job: any, index: number) => (
-          <li key={index}>{job.title}</li>
+      <ul style={{ marginLeft: '40px' }}>
+        {userData.freelancerJobApplications.edges.map((job: any, index: number) => (
+          <li key={index}>{job.node.job.title}</li>
         ))}
       </ul>
       <FormControl fullWidth style={{ marginTop: '20px' }}>
