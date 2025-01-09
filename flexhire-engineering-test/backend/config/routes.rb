@@ -14,4 +14,7 @@ Rails.application.routes.draw do
 
   post '/graphql', to: 'application#graphql_proxy_request'
 
+  # CORS
+  match '*path', to: 'application#handle_cors', via: [:options]
+
 end

@@ -15,9 +15,10 @@ class ApplicationController < ActionController::Base
   # Proxy GraphQL request to Flexhire API
   def graphql_proxy_request
     request_body = JSON.parse(request.body.read)
+    headers = request.headers
     query = request_body["query"]
     variables = request_body["variables"] || {}
-    api_key = request_body["apiKey"] || FLEXHIRE_API_KEY
+    api_key = headers["FLEXHIRE-API-KEY"] || FLEXHIRE_API_KEY
 
     if api_key.nil? || api_key.strip.empty?
       render json: { error: "API key is required" }, status: :unauthorized
@@ -26,6 +27,14 @@ class ApplicationController < ActionController::Base
 
     response = send_request_to_flexhire(query, variables, api_key)
     render json: response[:body], status: response[:status]
+  end
+
+  # CORS handling for preflight requests
+  def handle_cors
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept, Authorization'
+    head :ok
   end
 
   private
@@ -44,13 +53,5 @@ class ApplicationController < ActionController::Base
     response = HTTParty.post(FLEXHIRE_API_URL, headers: headers, body: body)
 
     { status: response.code, body: response.parsed_response }
-  end
-
-  # CORS handling for preflight requests
-  def handle_cors
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept, Authorization'
-    head :ok
   end
 end

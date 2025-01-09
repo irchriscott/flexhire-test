@@ -11,9 +11,8 @@ import {
   InputLabel, 
   Select 
 } from '@mui/material';
-import axios from 'axios';
-
-const API_BASE_URL = "http://localhost:3000/graphql";
+import { graphql, commitMutation } from 'react-relay';
+import { initRelayEnvironment } from '../../RelayEnvironment';
 
 type ProfilePageProps = {
   userData: any;
@@ -24,23 +23,25 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData, apiKey }) => {
 
   const [visibility, setVisibility] = useState(userData.profile.visibility);
 
-  //I was unable to test this as I couldn't find the GraphQL API endpoint for this particular mutation
-  const updateVisibility = async (newVisibility: string) => {
-    try {
-      await axios.post(API_BASE_URL, {
-        query: `mutation {
-          updateUser(input: { visibility: "${newVisibility}" }) {
-            profile {
-              visibility
-            }
+  const updateVisibility = (newVisibility: string) => {
+    const mutation = graphql`
+      mutation ProfilePageUpdateVisibilityMutation($input: UpdateVisibilityInput!) {
+        updateVisibility(input: $input) {
+          profile {
+            visibility
           }
-        }`,
-        apiKey,
-      });
-      setVisibility(newVisibility);
-    } catch (error) {
-      console.error('Update visibility error:', error);
-    }
+        }
+      }
+    `;
+
+    commitMutation(initRelayEnvironment(), {
+      mutation,
+      variables: { input: { visibility: newVisibility } },
+      onCompleted: (response: any) => {
+        setVisibility(newVisibility);
+      },
+      onError: (err) => console.error(err),
+    });
   };
 
   return (

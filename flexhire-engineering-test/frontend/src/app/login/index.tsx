@@ -1,55 +1,59 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography, Avatar, Grid, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
-import axios from 'axios';
+import { TextField, Button, Container, Typography } from '@mui/material';
 import ProfilePage from '../profile';
-
-const API_BASE_URL = "http://localhost:3000/graphql";
+import { graphql, fetchQuery } from 'react-relay';
+import { initRelayEnvironment } from '../../RelayEnvironment';
 
 const LoginPage = () => {
   const [apiKey, setApiKey] = useState('');
   const [userData, setUserData] = useState(null);
+  const [error, setError] = useState(null);
+  
 
   const handleLogin = async () => {
-    try {
-      const response = await axios.post(API_BASE_URL, {
-        query: `{
-            currentUser {
-              name,
-              avatarUrl,
-              visibility,
-              userSkills {
-                experience,
-                skill {
-                  name
-                }
-              },
-              profile {
-                visibility
-              },
-              jobApplications {
-                edges {
-                  node {
-                    job {
-                      title
-                    }
-                  }
+    const query = graphql`
+      query GetUserDataQuery {
+        currentUser {
+          name,
+          avatarUrl,
+          visibility,
+          userSkills {
+            experience,
+            skill {
+              name
+            }
+          },
+          profile {
+            visibility
+          },
+          jobApplications {
+            edges {
+              node {
+                job {
+                  title
                 }
               }
-            },
-          }`,
-        apiKey: apiKey,
-      });
-
-      if (response.data.errors) {
-        alert('Invalid API Key');
-        return;
+            }
+          }
+        },
       }
+    `;
 
-      const data = response.data.data.currentUser;
-      setUserData(data);
-    } catch (error) {
-      console.error('Login error:', error);
-      alert('Failed to login');
+    try {
+      const variables = {};
+      const data = await fetchQuery(initRelayEnvironment(), query, variables, {
+        fetchOptions: {
+          headers: {
+            Authorization: apiKey,
+          },
+        },
+      }).toPromise();
+      const user = data?.data?.currentUser;
+      setUserData(user);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message);
+      setUserData(null);
     }
   };
 
