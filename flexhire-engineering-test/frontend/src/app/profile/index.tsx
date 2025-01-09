@@ -22,15 +22,17 @@ type ProfilePageProps = {
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ userData, apiKey }) => {
 
-  const [visibility, setVisibility] = useState(userData.visibility);
+  const [visibility, setVisibility] = useState(userData.profile.visibility);
 
   //I was unable to test this as I couldn't find the GraphQL API endpoint for this particular mutation
   const updateVisibility = async (newVisibility: string) => {
     try {
       await axios.post(API_BASE_URL, {
         query: `mutation {
-          updateVisibility(visibility: "${newVisibility}") {
-            visibility
+          updateUser(input: { visibility: "${newVisibility}" }) {
+            profile {
+              visibility
+            }
           }
         }`,
         apiKey,
@@ -69,9 +71,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData, apiKey }) => {
           value={visibility}
           onChange={(e) => updateVisibility(e.target.value)}
         >
-          <MenuItem value="private">Private</MenuItem>
-          <MenuItem value="public">Public</MenuItem>
-          <MenuItem value="clients_only">Clients Only</MenuItem>
+          <MenuItem value="visibility_private">Private</MenuItem>
+          <MenuItem value="visibility_public">Public</MenuItem>
+          <MenuItem value="visibility_clients">Clients Only</MenuItem>
         </Select>
       </FormControl>
     </Container>

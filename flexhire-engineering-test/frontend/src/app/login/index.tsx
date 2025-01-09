@@ -23,6 +23,9 @@ const LoginPage = () => {
                   name
                 }
               },
+              profile {
+                visibility
+              },
               jobApplications {
                 edges {
                   node {
