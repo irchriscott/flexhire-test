@@ -1,0 +1,36 @@
+{
+  "name": "flexhire-engineering-test",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 8080",
+    "build": "relay-compiler --validate && next build",
+    "start": "next start -p 8080",
+    "lint": "next lint",
+    "relay": "relay-compiler"
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.13.1",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^5.16.7",
+    "@mui/material-nextjs": "^5.16.6",
+    "axios": "^1.7.9",
+    "next": "14.2.5",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-relay": "^17.0.0",
+    "relay-runtime": "^17.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/react-relay": "^16.0.6",
+    "@types/relay-runtime": "^17.0.4",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5",
+    "relay-compiler": "^17.0.0",
+    "typescript": "^5"
+  }
+}
