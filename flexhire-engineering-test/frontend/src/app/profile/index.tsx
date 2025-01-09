@@ -25,10 +25,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData, apiKey }) => {
 
   const updateVisibility = (newVisibility: string) => {
     const mutation = graphql`
-      mutation ProfilePageUpdateVisibilityMutation($input: UpdateVisibilityInput!) {
-        updateVisibility(input: $input) {
-          profile {
-            visibility
+      mutation profileUpdateVisibilityMutation($input: UpdateUserInput!) {
+        updateUser(input: $input) {
+          user {
+            profile {
+              visibility
+            }
           }
         }
       }
@@ -36,7 +38,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData, apiKey }) => {
 
     commitMutation(initRelayEnvironment(), {
       mutation,
-      variables: { input: { visibility: newVisibility } },
+      variables: { input: { profile: { visibility: newVisibility } } },
       onCompleted: (response: any) => {
         setVisibility(newVisibility);
       },
@@ -54,15 +56,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData, apiKey }) => {
           <Typography variant="h5">{userData.name}</Typography>
         </Grid>
       </Grid>
-      <Typography variant="h6" gutterBottom>Skills:</Typography>
-      <ul>
+      <Typography variant="h6" sx={{mt: 3}} gutterBottom>Skills:</Typography>
+      <ul style={{ marginLeft: '40px' }}>
         {userData.userSkills.map((skill: any, index: number) => (
           <li key={index}>{skill.skill.name}</li>
         ))}
       </ul>
-      <Typography variant="h6" gutterBottom>Job Applications:</Typography>
+      <Typography variant="h6" sx={{mt: 3}} gutterBottom>Job Applications:</Typography>
       <ul>
-        {userData.jobApplications.map((job: any, index: number) => (
+        {userData.jobApplications.edges.map((job: any, index: number) => (
           <li key={index}>{job.title}</li>
         ))}
       </ul>

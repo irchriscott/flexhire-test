@@ -5,12 +5,10 @@ class ApplicationController < ActionController::Base
   require 'httparty'
 
   # Handle CORS preflight requests
-  before_action :handle_cors, only: [:POST, :GET, :OPTIONS]
+  protect_from_forgery with: :exception
+  skip_before_action :verify_authenticity_token, if: -> { request.format.json? }
 
   FLEXHIRE_API_URL = "https://flexhire.com/api/v2"
-  # For the purpose of this test, I'm putting the API key here. 
-  # In a real-world scenario, this would be stored in an environment variable.
-  FLEXHIRE_API_KEY = "v5m1lwwt4h7kuor3"
 
   # Proxy GraphQL request to Flexhire API
   def graphql_proxy_request
@@ -18,7 +16,7 @@ class ApplicationController < ActionController::Base
     headers = request.headers
     query = request_body["query"]
     variables = request_body["variables"] || {}
-    api_key = headers["FLEXHIRE-API-KEY"] || FLEXHIRE_API_KEY
+    api_key = headers["Authorization"]
 
     if api_key.nil? || api_key.strip.empty?
       render json: { error: "API key is required" }, status: :unauthorized
@@ -27,14 +25,6 @@ class ApplicationController < ActionController::Base
 
     response = send_request_to_flexhire(query, variables, api_key)
     render json: response[:body], status: response[:status]
-  end
-
-  # CORS handling for preflight requests
-  def handle_cors
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept, Authorization'
-    head :ok
   end
 
   private

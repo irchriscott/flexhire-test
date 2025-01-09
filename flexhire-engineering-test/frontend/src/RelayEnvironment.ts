@@ -10,12 +10,14 @@ import {
 const HTTP_ENDPOINT = "http://localhost:3000/graphql";
 
 const fetchFn: FetchFunction = async (request, variables) => {
+  const token = localStorage.getItem("apiKey");
   const resp = await fetch(HTTP_ENDPOINT, {
     method: "POST",
     headers: {
       Accept:
         "application/graphql-response+json; charset=utf-8, application/json; charset=utf-8",
       "Content-Type": "application/json",
+      Authorization: token
       // <-- Additional headers like 'Authorization' would go here
     },
     body: JSON.stringify({

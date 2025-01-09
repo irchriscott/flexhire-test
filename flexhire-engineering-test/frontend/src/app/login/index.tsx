@@ -9,14 +9,12 @@ const LoginPage = () => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
   
-
   const handleLogin = async () => {
     const query = graphql`
-      query GetUserDataQuery {
+      query loginUserDataQuery {
         currentUser {
           name,
           avatarUrl,
-          visibility,
           userSkills {
             experience,
             skill {
@@ -39,19 +37,15 @@ const LoginPage = () => {
       }
     `;
 
+    await localStorage.setItem('apiKey', apiKey);
+
     try {
       const variables = {};
-      const data = await fetchQuery(initRelayEnvironment(), query, variables, {
-        fetchOptions: {
-          headers: {
-            Authorization: apiKey,
-          },
-        },
-      }).toPromise();
-      const user = data?.data?.currentUser;
-      setUserData(user);
+      const data = await fetchQuery(initRelayEnvironment(), query, variables).toPromise() as any;
+      setUserData(data?.currentUser);
       setError(null);
     } catch (err: any) {
+      console.log(err);
       setError(err.message);
       setUserData(null);
     }
@@ -59,7 +53,12 @@ const LoginPage = () => {
 
   return (
     <>
-    {userData ? <ProfilePage userData={userData} apiKey={apiKey} /> : (
+    {userData ? (
+        <>
+        <ProfilePage userData={userData} apiKey={apiKey} />
+        {error && <Typography variant="h6" color="error">{error}</Typography>}
+        </>
+      ) : (
       <Container maxWidth="sm">
         <Typography variant="h4" gutterBottom>
           Login with API Key
