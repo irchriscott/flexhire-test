@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
   def send_request_to_flexhire(query, variables, api_key)
     headers = {
       "Content-Type" => "application/json",
-      "FLEXHIRE-API-KEY" => FLEXHIRE_API_KEY
+      "FLEXHIRE-API-KEY" => api_key
     }
 
     body = {

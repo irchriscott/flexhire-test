@@ -59,12 +59,12 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData, apiKey }) => {
       <Typography variant="h6" sx={{mt: 3}} gutterBottom>Skills:</Typography>
       <ul style={{ marginLeft: '40px' }}>
         {userData.userSkills.map((skill: any, index: number) => (
-          <li key={index}>{skill.skill.name}</li>
+          <li key={index}>{skill.skill.name}: {skill.experience} years</li>
         ))}
       </ul>
       <Typography variant="h6" sx={{mt: 3}} gutterBottom>Job Applications:</Typography>
       <ul>
-        {userData.jobApplications.edges.map((job: any, index: number) => (
+        {userData.jobApplications.nodes.map((job: any, index: number) => (
           <li key={index}>{job.title}</li>
         ))}
       </ul>

@@ -25,11 +25,9 @@ const LoginPage = () => {
             visibility
           },
           jobApplications {
-            edges {
-              node {
-                job {
-                  title
-                }
+            nodes {
+              job {
+                title
               }
             }
           }
